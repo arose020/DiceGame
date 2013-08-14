@@ -34,6 +34,7 @@
             this.lbl_dice4 = new System.Windows.Forms.Label();
             this.lbl_dice5 = new System.Windows.Forms.Label();
             this.btn_rollDice = new System.Windows.Forms.Button();
+            this.lbl_displayResults = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbl_dice2
@@ -78,7 +79,7 @@
             // 
             // btn_rollDice
             // 
-            this.btn_rollDice.Location = new System.Drawing.Point(100, 200);
+            this.btn_rollDice.Location = new System.Drawing.Point(93, 86);
             this.btn_rollDice.Name = "btn_rollDice";
             this.btn_rollDice.Size = new System.Drawing.Size(200, 50);
             this.btn_rollDice.TabIndex = 5;
@@ -86,11 +87,25 @@
             this.btn_rollDice.UseVisualStyleBackColor = true;
             this.btn_rollDice.Click += new System.EventHandler(this.btn_rollDice_Click);
             // 
+            // lbl_displayResults
+            // 
+            this.lbl_displayResults.AutoSize = true;
+            this.lbl_displayResults.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbl_displayResults.Location = new System.Drawing.Point(72, 153);
+            this.lbl_displayResults.MaximumSize = new System.Drawing.Size(250, 50);
+            this.lbl_displayResults.MinimumSize = new System.Drawing.Size(250, 50);
+            this.lbl_displayResults.Name = "lbl_displayResults";
+            this.lbl_displayResults.Size = new System.Drawing.Size(250, 50);
+            this.lbl_displayResults.TabIndex = 6;
+            this.lbl_displayResults.Text = "Roll The Dice!";
+            this.lbl_displayResults.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(384, 262);
+            this.Controls.Add(this.lbl_displayResults);
             this.Controls.Add(this.btn_rollDice);
             this.Controls.Add(this.lbl_dice5);
             this.Controls.Add(this.lbl_dice4);
@@ -104,6 +119,7 @@
             this.Text = "Dice Game";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -115,6 +131,7 @@
         private System.Windows.Forms.Label lbl_dice4;
         private System.Windows.Forms.Label lbl_dice5;
         private System.Windows.Forms.Button btn_rollDice;
+        private System.Windows.Forms.Label lbl_displayResults;
     }
 }
 
