@@ -1,4 +1,5 @@
 ﻿#region Using Statements
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,18 +8,17 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+
 #endregion
 
-namespace WindowsFormsApplication1
+namespace DiceGame
 {
     public partial class Form1 : Form
     {
         #region Declaration
 
         Image[] diceImages;
-        int[] dice;
-        int[] diceResults;
-        Random rand;
+        Player player1, player2;
 
         #endregion
 
@@ -31,6 +31,13 @@ namespace WindowsFormsApplication1
 
         private void Form1_Load(object sender, EventArgs e)
         {
+         
+            player1 = new Player("Player 1");
+            player2 = new Player("Player 2");
+
+            lbl_p1Name.Text = player1.Name;
+            lbl_p2Name.Text = player2.Name;
+
             diceImages = new Image[7];
             diceImages[0] = DiceGame.Properties.Resources.dice_blank;
             diceImages[1] = DiceGame.Properties.Resources.dice_1;
@@ -39,184 +46,130 @@ namespace WindowsFormsApplication1
             diceImages[4] = DiceGame.Properties.Resources.dice_4;
             diceImages[5] = DiceGame.Properties.Resources.dice_5;
             diceImages[6] = DiceGame.Properties.Resources.dice_6;
-
-            dice = new int[5] { 0, 0, 0, 0, 0 };
-
-            diceResults = new int[6] { 0, 0, 0, 0, 0, 0 };
-
-            rand = new Random();
-
         }
 
         #endregion
 
         #region Game Methods
 
-        private void btn_rollDice_Click(object sender, EventArgs e)
+        private void btn_p1RollDice_Click(object sender, EventArgs e)
         {
-            RollDice();
-
-            GetResults();
-
-            ResetDice();
-        }
-
-        private void RollDice()
-        {
-            for (int i = 0; i < dice.Length; i++)
+            if (!player1.Played)
             {
-                dice[i] = rand.Next(1, 6 + 1);
-                ///returns a # from 1-6
+                player1.RollDice();
 
-                switch (dice[i])
-                {
-                    case 1:
-                        diceResults[0]++;
-                        break;
-                    case 2:
-                        diceResults[1]++;
-                        break;
-                    case 3:
-                        diceResults[2]++;
-                        break;
-                    case 4:
-                        diceResults[3]++;
-                        break;
-                    case 5:
-                        diceResults[4]++;
-                        break;
-                    case 6:
-                        diceResults[5]++;
-                        break;
-                }
+                lbl_p1dice1.Image = diceImages[player1.Dice[0]];
+                lbl_p1dice2.Image = diceImages[player1.Dice[1]];
+                lbl_p1dice3.Image = diceImages[player1.Dice[2]];
+                lbl_p1dice4.Image = diceImages[player1.Dice[3]];
+                lbl_p1dice5.Image = diceImages[player1.Dice[4]];
+                lbl_p1DisplayResults.Text = player1.Result;
+
+                player1.Played = true;
+
+                CheckWinner();
             }
-
-            lbl_dice1.Image = diceImages[dice[0]];
-            lbl_dice2.Image = diceImages[dice[1]];
-            lbl_dice3.Image = diceImages[dice[2]];
-            lbl_dice4.Image = diceImages[dice[3]];
-            lbl_dice5.Image = diceImages[dice[4]];
-
         }
 
-        private void GetResults()
+        private void btn_p2RollDice_Click(object sender, EventArgs e)
         {
-            bool fiveKind = false, 
-                fourKind = false, 
-                highStraight = false,
-                lowStraight = false, 
-                fullHouse = false, 
-                threeKind = false,
-                twoPair = false, 
-                onePair = false, 
-                haveSix = false,
-                haveFive = false,
-                haveFour = false,
-                haveThree = false,
-                haveTwo = false,
-                haveOne = false;
-
-            for (int i = 0; i < diceResults.Length; i++)
+            if (!player2.Played)
             {
-                if (diceResults[i] == 5)
-                    fiveKind = true;
-                else if (diceResults[i] == 4)
-                    fourKind = true;
-                else if (diceResults[1] == 1 &&
-                         diceResults[2] == 1 &&
-                         diceResults[3] == 1 &&
-                         diceResults[4] == 1 &&
-                         diceResults[5] == 1)
-                    highStraight = true;
-                else if (diceResults[0] == 1 &&
-                         diceResults[1] == 1 &&
-                         diceResults[2] == 1 &&
-                         diceResults[3] == 1 &&
-                         diceResults[4] == 1)
-                    lowStraight = true;
-                else if (diceResults[i] == 3)
-                {
-                    threeKind = true;
+                player2.RollDice();
 
-                    for (int j = 0; j < diceResults.Length; j++)
+                lbl_p2dice1.Image = diceImages[player2.Dice[0]];
+                lbl_p2dice2.Image = diceImages[player2.Dice[1]];
+                lbl_p2dice3.Image = diceImages[player2.Dice[2]];
+                lbl_p2dice4.Image = diceImages[player2.Dice[3]];
+                lbl_p2dice5.Image = diceImages[player2.Dice[4]];
+                lbl_p2DisplayResults.Text = player2.Result;
+
+                player2.Played = true;
+
+                CheckWinner();
+            }
+        }
+
+        private void CheckWinner()
+        {
+            if (player1.Played && player2.Played)
+            {
+                if (player1.HandRank > player2.HandRank)
+                {
+                    lbl_compare.Text = player1.Name + " Wins!";
+                }
+
+                else if (player2.HandRank > player1.HandRank)
+                {
+                    lbl_compare.Text = player2.Name + " Wins!";
+                }
+
+                else if (player1.HandRank == 8 && player2.HandRank == 8)
+                {
+                    if (player1.Mod1 > player2.Mod1 &&
+                        player1.Mod2 > player2.Mod2)
                     {
-                        if (diceResults[j] == 2)
-                            fullHouse = true;
+                        lbl_compare.Text = player1.Name + " Wins!";
+                    }
+
+                    else if (player1.Mod2 > player2.Mod1 &&
+                             player1.Mod2 > player2.Mod2)
+                    {
+                        lbl_compare.Text = player1.Name + " Wins!";
+                    }
+
+                    else if (player1.Mod1 == player2.Mod1 &&
+                             player1.Mod2 == player2.Mod2 ||
+                             player1.Mod2 == player2.Mod1 &&
+                             player1.Mod2 == player2.Mod1)
+                    {
+                        if (player1.Mod3 > player2.Mod3)
+                        {
+                            lbl_compare.Text = player1.Name + " Wins!";
+                        }
+
+                        else if (player2.Mod3 > player1.Mod3)
+                        {
+                            lbl_compare.Text = player2.Name + " Wins!";
+                        }
+
+                        else
+                        {
+                            lbl_compare.Text = "Tie!";
+                        }
                     }
                 }
-                else if (diceResults[i] == 2)
+                else if (player1.HandRank == player2.HandRank)
                 {
-                    onePair = true;
-
-                    for (int j = i + 1; j < diceResults.Length; j++)
+                    if (player1.Mod1 > player2.Mod1)
+                        lbl_compare.Text = player1.Name + " Wins!";
+                    else if (player2.Mod1 > player1.Mod1)
+                        lbl_compare.Text = player2.Name + " Wins!";
+                    else if (player1.Mod1 == player2.Mod2)
                     {
-                        if (diceResults[j] == 2)
-                            twoPair = true;
+                        if (player1.Mod2 > player2.Mod2)
+                            lbl_compare.Text = player1 + " Wins!";
+                        else if (player2.Mod2 > player1.Mod2)
+                            lbl_compare.Text = player2 + " Wins!";
+                        else if (player1.Mod2 == player2.Mod2)
+                        {
+                            if (player1.Mod3 > player2.Mod3)
+                                lbl_compare.Text = player1 + " Wins!";
+                            else if (player2.Mod3 > player1.Mod3)
+                                lbl_compare.Text = player2 + " Wins!";
+                            else if (player1.Mod3 == player2.Mod3)
+                                lbl_compare.Text = "Tie!";
+                        }
                     }
                 }
+                player1.ResetPlayer();
+                player2.ResetPlayer();
             }
-
-            for (int i = 0; i < dice.Length; i++)
-            {
-                switch (dice[i])
-                {
-                    case 6:
-                        haveSix = true;
-                        break;
-                    case 5:
-                        haveFive = true;
-                        break;
-                    case 4:
-                        haveFour = true;
-                        break;
-                    case 3:
-                        haveThree = true;
-                        break;
-                    case 2:
-                        haveTwo = true;
-                        break;        
-                    case 1:
-                        haveOne = true;
-                        break;
-                }
-            }
-
-            if (fiveKind)
-                lbl_displayResults.Text = "Five of a kind!";
-            else if (fourKind)
-                lbl_displayResults.Text = "Four of a kind!";
-            else if (highStraight)
-                lbl_displayResults.Text = "High Straight!";
-            else if (lowStraight)
-                lbl_displayResults.Text = "Low Straight!";
-            else if (fullHouse)
-                lbl_displayResults.Text = "Full House!";
-            else if (threeKind)
-                lbl_displayResults.Text = "Three of a kind!";
-            else if (twoPair)
-                lbl_displayResults.Text = "Two Pair!";
-            else if (onePair)
-                lbl_displayResults.Text = "Pair!";
-            else if (haveSix)
-                lbl_displayResults.Text = "You have Crap";
-                //Six High
-            else if (haveFive)
-                lbl_displayResults.Text = "You have Crap";
-            else if (haveFour)
-                lbl_displayResults.Text = "You have Crap";
-            else if (haveThree)
-                lbl_displayResults.Text = "You Have Crap";
-            else if (haveTwo)
-                lbl_displayResults.Text = "You Have Crap";
-            else if (haveOne)
-                lbl_displayResults.Text = "You have Crap";
+            else if (player1.Played && !player2.Played)
+                lbl_compare.Text = "Waiting for " + player2.Name + " to roll";
+            else if (player2.Played && !player1.Played)
+                lbl_compare.Text = "Waiting for " + player1.Name + " to roll";
         }
-
-        private void ResetDice()
-        {
-            for (int i = 0; i < diceResults.Length; i++)
-                diceResults[i] = 0;
-        }
-    }
         #endregion
+    } 
 }
